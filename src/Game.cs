@@ -4,12 +4,13 @@ class Game
 {
 	// Private fields
 	private Parser parser;
-	private Room currentRoom;
+	private Player player;
 
 	// Constructor
 	public Game()
 	{
 		parser = new Parser();
+		player = new Player();
 		CreateRooms();
 	}
 
@@ -43,7 +44,7 @@ class Game
 		// ...
 
 		// Start game outside
-		currentRoom = outside;
+		player.CurrentRoom = outside;
 	}
 
 	//  Main play routine. Loops until end of play.
@@ -58,6 +59,11 @@ class Game
 		{
 			Command command = parser.GetCommand();
 			finished = ProcessCommand(command);
+			if (player.health <= 0)
+			{
+				Console.WriteLine("You have died.");
+				finished = true;
+			}
 		}
 		Console.WriteLine("Thank you for playing.");
 		Console.WriteLine("Press [Enter] to continue.");
@@ -72,7 +78,7 @@ class Game
 		Console.WriteLine("Zuul is a new, incredibly boring adventure game.");
 		Console.WriteLine("Type 'help' if you need help.");
 		Console.WriteLine();
-		Console.WriteLine(currentRoom.GetLongDescription());
+		Console.WriteLine(player.CurrentRoom.GetLongDescription());
 	}
 
 	// Given a command, process (that is: execute) the command.
@@ -99,6 +105,9 @@ class Game
 			case "quit":
 				wantToQuit = true;
 				break;
+			case "status":
+				PlayerHealth();
+				break;
 		}
 
 		return wantToQuit;
@@ -119,6 +128,11 @@ class Game
 		parser.PrintValidCommands();
 	}
 
+	private void PlayerHealth()
+	{
+		Console.WriteLine(player.health);
+	}
+
 	// Try to go to one direction. If there is an exit, enter the new
 	// room, otherwise print an error message.
 	private void GoRoom(Command command)
@@ -133,14 +147,16 @@ class Game
 		string direction = command.SecondWord;
 
 		// Try to go to the next room.
-		Room nextRoom = currentRoom.GetExit(direction);
+		Room nextRoom = player.CurrentRoom.GetExit(direction);
 		if (nextRoom == null)
 		{
 			Console.WriteLine("There is no door to "+direction+"!");
 			return;
 		}
 
-		currentRoom = nextRoom;
-		Console.WriteLine(currentRoom.GetLongDescription());
+		player.CurrentRoom = nextRoom;
+		Console.WriteLine(player.CurrentRoom.GetLongDescription());
+		player.health -= 10;
+		Console.WriteLine("You are wounded and lose health.");
 	}
 }
