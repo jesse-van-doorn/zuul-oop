@@ -23,6 +23,7 @@ class Game
 		Room pub = new Room("in the campus pub");
 		Room lab = new Room("in a computing lab");
 		Room office = new Room("in the computing admin office");
+		Room pubUpstairs = new Room("in the storage area of the pub");
 
 		// Initialise room exits
 		outside.AddExit("east", theatre);
@@ -32,6 +33,9 @@ class Game
 		theatre.AddExit("west", outside);
 
 		pub.AddExit("east", outside);
+		pub.AddExit("up", pubUpstairs);
+
+		pubUpstairs.AddExit("down", pub);
 
 		lab.AddExit("north", outside);
 		lab.AddExit("east", office);
@@ -59,9 +63,8 @@ class Game
 		{
 			Command command = parser.GetCommand();
 			finished = ProcessCommand(command);
-			if (player.health <= 0)
-			{
-				Console.WriteLine("You have died.");
+			if (player.IsAlive() == true) {
+				Console.WriteLine("You have died");
 				finished = true;
 			}
 		}
@@ -108,6 +111,10 @@ class Game
 			case "status":
 				PlayerHealth();
 				break;
+			case "look":
+				Console.WriteLine(player.CurrentRoom.GetLongDescription());
+				break;
+
 		}
 
 		return wantToQuit;
@@ -156,7 +163,6 @@ class Game
 
 		player.CurrentRoom = nextRoom;
 		Console.WriteLine(player.CurrentRoom.GetLongDescription());
-		player.health -= 10;
-		Console.WriteLine("You are wounded and lose health.");
+		player.Damage();
 	}
 }
