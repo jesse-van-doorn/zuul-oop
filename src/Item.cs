@@ -8,4 +8,6 @@ class Item
         Weight = weight;
         Description = description;
     }
+
+    Item potion = new Item(5, "A healing potion");
 }

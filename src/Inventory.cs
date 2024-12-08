@@ -2,7 +2,6 @@ class Inventory
 {
     private int maxWeight = 10;
     private Dictionary<string, Item> items;
-
     public Inventory(int maxWeight)
     {
         this.maxWeight = maxWeight;
@@ -16,10 +15,9 @@ class Inventory
         // Does the Item fit?
         // Put Item in the items Dictionary
         // Return true/false for success/failure
-        
         if (item.Weight + TotalWeight() < maxWeight)
         {
-            // items.Add( , );
+            items.Add(itemName , item);
             return true;
         }
         Console.WriteLine("Not enough space");
@@ -32,6 +30,12 @@ class Inventory
         // Find Item in items Dictionary
         // remove Item from items Dictionary if found
         // return Item or null
+        if (items.ContainsKey(itemName))
+        {
+            Item item = items[itemName];
+            items.Remove(itemName);
+            return item;
+        }
         return null;
     }
 
@@ -40,6 +44,10 @@ class Inventory
     {
         int total = 0;
         
+        foreach(var item in items.Values)
+        {
+            total += item.Weight;
+        }
         // TODO implement:
         // loop through the items, and add all the weightsreturn total;
         return total;

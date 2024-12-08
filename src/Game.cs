@@ -137,7 +137,7 @@ class Game
 
 	private void PlayerHealth()
 	{
-		Console.WriteLine(player.health);
+		Console.WriteLine("Health: " + player.health);
 	}
 
 	// Try to go to one direction. If there is an exit, enter the new
